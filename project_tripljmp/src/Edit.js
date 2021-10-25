@@ -4,6 +4,7 @@ import "./Home.css";
 import TextField from "@material-ui/core/TextField";
 import { Button } from "@material-ui/core";
 import firebase from "firebase";
+import { storage } from "./firebase_config";
 
 function Edit(props) {
   const [listing, setListing] = useState(null);
@@ -22,24 +23,65 @@ function Edit(props) {
   const [about, setAbout] = useState(null);
   const [location, setLocation] = useState(null);
   const [admissions, setAdmissions] = useState(null);
-  console.log(schoolName);
+  const [image, setImage] = useState(null);
+  const [url, setUrl] = useState(null);
+
   function addListings(e) {
     e.preventDefault();
 
-    db.collection("listings")
-      .doc(props.id)
-      .set({
-        schoolName: schoolName?.length ? schoolName : listing?.schoolName,
-        about: about?.length ? about : listing?.about,
-        location: location?.length ? location : listing?.location,
-        admissions: admissions?.length ? admissions : listing?.admissions,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    if (image != null) {
+      handleUpload().then((url) => {
+        db.collection("listings")
+          .doc(props.id)
+          .set({
+            schoolName: schoolName?.length ? schoolName : listing?.schoolName,
+            about: about?.length ? about : listing?.about,
+            location: location?.length ? location : listing?.location,
+            admissions: admissions?.length ? admissions : listing?.admissions,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            url: url?.length ? url : listing?.url,
+          });
       });
+    } else {
+      db.collection("listings")
+        .doc(props.id)
+        .set({
+          schoolName: schoolName?.length ? schoolName : listing?.schoolName,
+          about: about?.length ? about : listing?.about,
+          location: location?.length ? location : listing?.location,
+          admissions: admissions?.length ? admissions : listing?.admissions,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          url: url?.length ? url : listing?.url,
+        });
+    }
 
     setTimeout(() => {
       window.location.href = "/";
     }, 500);
   }
+
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    let url = null;
+    await storage
+      .ref("images")
+      .child(image.name)
+      .getDownloadURL()
+      .then((u) => {
+        console.log(u);
+        // setUrl(u);
+        // console.log(url);
+        url = u;
+      });
+    console.log("new: ", url);
+    return url;
+  };
 
   return (
     <div
@@ -107,6 +149,7 @@ function Edit(props) {
             alignSelf: "flex-start",
             paddingLeft: "15vw",
           }}
+          onChange={handleChange}
         />
         <div style={{ flexDirection: "row", paddingBottom: "40px" }}>
           <Button

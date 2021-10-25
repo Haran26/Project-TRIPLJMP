@@ -39,14 +39,9 @@ function Input(props) {
       });
     }
 
-    setSchoolName("");
-    setAbout("");
-    setLocation("");
-    setAdmissions("");
-
     setTimeout(() => {
       window.location.href = "/";
-    }, 5000);
+    }, 500);
   }
 
   const handleChange = (e) => {
@@ -68,30 +63,6 @@ function Input(props) {
         // console.log(url);
         url = u;
       });
-
-    // await uploadTask.on(
-    //   "state_changed",
-    //   (snapshot) => {
-    //     const progress = Math.round(
-    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-    //     );
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   },
-    //   async () => {
-    //     await storage
-    //       .ref("images")
-    //       .child(image.name)
-    //       .getDownloadURL()
-    //       .then((u) => {
-    //         console.log(u);
-    //         // setUrl(u);
-    //         // console.log(url);
-    //         url = u;
-    //       });
-    // }
-    // );
     console.log("new: ", url);
     return url;
   };
