@@ -5,6 +5,7 @@ import { db } from "./firebase_config";
 import MyListItem from "./MyLists";
 import { Link } from "react-router-dom";
 import View from "./View";
+import Edit from "./Edit";
 
 function Home() {
   const [listings, setListings] = useState([]);
@@ -28,6 +29,11 @@ function Home() {
   }
 
   const [showView, setShowView] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+
+  if (showEdit) {
+    return <Edit setShowEdit={setShowEdit} id={showEdit}></Edit>;
+  }
 
   if (showView) {
     return <View setShowView={setShowView} id={showView}></View>;
@@ -63,6 +69,8 @@ function Home() {
             about={listing.about}
             location={listing.location}
             admissions={listing.admissions}
+            showEdit={showEdit}
+            setShowEdit={setShowEdit}
           />
         ))}
       </div>

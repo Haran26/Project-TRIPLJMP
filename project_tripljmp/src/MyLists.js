@@ -10,6 +10,8 @@ export default function MyListItem({
   admissions,
   showView,
   setShowView,
+  showEdit,
+  setShowEdit,
 }) {
   function deleteListing() {
     db.collection("listings").doc(id).delete();
@@ -21,6 +23,7 @@ export default function MyListItem({
         <ListItemText primary={schoolName}></ListItemText>
       </ListItem>
       <Button onClick={() => setShowView(id)}>View</Button>
+      <Button onClick={() => setShowEdit(id)}>Edit</Button>
       <Button onClick={deleteListing}>X</Button>
     </div>
   );
