@@ -12,6 +12,7 @@ export default function MyListItem({
   setShowView,
   showEdit,
   setShowEdit,
+  url,
 }) {
   function deleteListing() {
     db.collection("listings").doc(id).delete();

@@ -21,7 +21,7 @@ function View(props) {
   const [about, setAbout] = useState(null);
   const [location, setLocation] = useState(null);
   const [admissions, setAdmissions] = useState(null);
-  console.log(schoolName);
+  const [url, setUrl] = useState(null);
 
   return (
     <div
@@ -42,6 +42,11 @@ function View(props) {
       <h3 style={{ fontSize: "15pt", maxWidth: "60vw", paddingBottom: "2vh" }}>
         {admissions != null ? admissions : listing?.admissions}
       </h3>
+      <img
+        src={listing?.url || "https://via.placeholder.com/300"}
+        alt="firebase-image"
+        style={{ paddingBottom: "2vh", width: "300px", height: "300px" }}
+      />
       <h3 style={{ fontSize: "15pt", maxWidth: "40vw", paddingBottom: "4vh" }}>
         {about != null ? about : listing?.about}
       </h3>

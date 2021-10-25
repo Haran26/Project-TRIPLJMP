@@ -71,6 +71,7 @@ function Home() {
             admissions={listing.admissions}
             showEdit={showEdit}
             setShowEdit={setShowEdit}
+            url={listing.url}
           />
         ))}
       </div>

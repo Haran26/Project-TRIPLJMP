@@ -4,23 +4,40 @@ import { useState } from "react";
 import { Button } from "@material-ui/core";
 import { db } from "./firebase_config";
 import firebase from "firebase";
+import { storage } from "./firebase_config";
 
 function Input(props) {
   const [schoolName, setSchoolName] = useState("");
   const [about, setAbout] = useState("");
   const [location, setLocation] = useState("");
   const [admissions, setAdmissions] = useState("");
+  const [image, setImage] = useState(null);
+  const [url, setUrl] = useState("");
 
   function addListings(e) {
     e.preventDefault();
 
-    db.collection("listings").add({
-      schoolName: schoolName,
-      about: about,
-      location: location,
-      admissions: admissions,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    if (image != null) {
+      handleUpload().then((url) => {
+        db.collection("listings").add({
+          schoolName: schoolName,
+          about: about,
+          location: location,
+          admissions: admissions,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          url: url,
+        });
+      });
+    } else {
+      db.collection("listings").add({
+        schoolName: schoolName,
+        about: about,
+        location: location,
+        admissions: admissions,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        url: url,
+      });
+    }
 
     setSchoolName("");
     setAbout("");
@@ -29,8 +46,55 @@ function Input(props) {
 
     setTimeout(() => {
       window.location.href = "/";
-    }, 500);
+    }, 5000);
   }
+
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    let url = null;
+    await storage
+      .ref("images")
+      .child(image.name)
+      .getDownloadURL()
+      .then((u) => {
+        console.log(u);
+        // setUrl(u);
+        // console.log(url);
+        url = u;
+      });
+
+    // await uploadTask.on(
+    //   "state_changed",
+    //   (snapshot) => {
+    //     const progress = Math.round(
+    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+    //     );
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   },
+    //   async () => {
+    //     await storage
+    //       .ref("images")
+    //       .child(image.name)
+    //       .getDownloadURL()
+    //       .then((u) => {
+    //         console.log(u);
+    //         // setUrl(u);
+    //         // console.log(url);
+    //         url = u;
+    //       });
+    // }
+    // );
+    console.log("new: ", url);
+    return url;
+  };
 
   return (
     <div
@@ -94,6 +158,7 @@ function Input(props) {
             alignSelf: "flex-start",
             paddingLeft: "15vw",
           }}
+          onChange={handleChange}
         />
         <Button
           type="submit"
